@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Update for your admin password
+username=lgwfox
+AdminPassword=_3dlrjsdn032A
+resourcename=geunwooRG-Test1
+vnet=WEBZENVNET
+public=sysIP
+subnet=systemSubnet
+vmname=systemVM
+image=RedHat:RHEL:7.6:7.6.2020080921
+size=Standard_DS2_v2
+
+# Create a resource group.
+az group create --name $resourcename --location westus
+
+# Create a virtual network.
+az network vnet create --resource-group $resourcename --name $vnet \
+  --address-prefix 192.168.0.0/16 --subnet-name $subnet --subnet-prefix 192.168.1.0/24
+
+# Create a public IP address.
+az network public-ip create --resource-group $resourcename --name $public
+
+# Create three virtual machines.
+  az vm create \
+    --resource-group $resourcename \
+    --name $vmname \
+    --image $image \
+    --admin-password $AdminPassword \
+    --admin-username $username \
+	--size=$size
+	
+# Boot diagnostics
+az vm boot-diagnostics enable --name $vmname --resource-group $resourcename
